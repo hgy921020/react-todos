@@ -74,7 +74,8 @@ class Cont extends Component{
     }
 
     handleEdit=(id)=>{ //操作编辑框的显示隐藏
-        console.log(id)
+        // console.log(id)
+        
         var todolist = this.state.todoList;
         todolist.forEach((obj)=>{  //关闭所有任务的编辑状态
                 obj.isEdit = false
@@ -92,17 +93,31 @@ class Cont extends Component{
 
     handleRealSave=(id,str)=>{  //保存编辑后的任务内容
         var todolist = this.state.todoList;
+                todolist.forEach((obj)=>{  
+                        if(obj.id===id){
+                            axios.get(`http://localhost:8000/edit?id=${id}&content=${str}`)
+                            .then((result)=>{
+                                console.log(result);
+                                if(result.data.code===1){
+                                    obj.isEdit = false
+                                    obj.content = str
+                                    this.setState({
+                                        todoList:todolist
+                                    })
+                                    return false;
+                                }
+                            }) 
+                        }
+                        
+                    })
+        // axios.get(`http://localhost:8000/edit?id=${id}&content=${str}`).then((result)=>{
+        //   if(result.data.code===1){
+        //       console.log(result)
+            
+        //     }
+        // })
 
-        todolist.forEach((obj)=>{ 
-            if(obj.id===id){
-                obj.isEdit = false
-                obj.content = str
-                this.setState({
-                    todoList:todolist
-                })
-                return false;
-            }
-        })
+        
     }
 
     handleTab=(str)=>{ //实现footer菜单切换
